@@ -273,7 +273,7 @@ updateLoop() {
                     /temp/enforceTimer.sh 
                 fi
                 
-                # ???
+                
                 git add --ignore-errors /temp/
                 git commit -m "$most_uptodate_dir" -q >/dev/null
                 # commits from init service only
