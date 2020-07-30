@@ -117,12 +117,13 @@ updateLoop() {
                 last_check_date=$cur_date
             fi
             
-            #if [[ $cur_time -ge $threshold_pt ]]
-            #then
-                #allow_time=$after_threshold_allow_time
-            #else
-                #allow_time=$before_threshold_allow_time
-            #fi
+            if [[ $cur_time -ge $threshold_pt ]]
+            then
+                allow_time=$after_threshold_allow_time
+            else
+                allow_time=$before_threshold_allow_time
+            fi
+            # test mode
             allow_time=$((cur_time-20))
                 
             # have to loop every time for removing purpose, cannot use checkpoint
@@ -222,6 +223,7 @@ updateLoop() {
                                 else
                                     cur_session_name="${start}_${end}_${tokens[1]}_${tokens[2]}_${tokens[3]}"
                                 fi
+                                continue
                                 
                             else
                                 cur_session_name=-1
@@ -235,12 +237,13 @@ updateLoop() {
                             content=$content$'\n'"$line"
                         fi
                     done < "/tempCopy/$most_uptodate_dir/session.txt"
-                    echo "-----------------------------"
+                    
                     if [[ $cur_session_name != '' ]]
                     then
                         echo "$cur_session_name"
                         printf "%s" "$content" > /temp/sessions/$cur_session_name
                     fi
+                    echo "-----------------------------"
                     mv /tempCopy/$most_uptodate_dir/session.txt /tempCopy/.trash/
                     check_pt=-1
                 fi

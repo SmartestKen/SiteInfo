@@ -34,7 +34,7 @@ systemctl enable mitmproxy.service
 
 
 # uninstall virtualbox (if exists)
-apt-get -qq purge -y virtualbox* >/dev/null
+# apt-get -qq purge -y virtualbox* >/dev/null
 
 
 
