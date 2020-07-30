@@ -124,7 +124,7 @@ updateLoop() {
                 allow_time=$before_threshold_allow_time
             fi
             # test mode
-            allow_time=$((cur_time-20))
+            # allow_time=$((cur_time-20))
                 
             # have to loop every time for removing purpose, cannot use checkpoint
             most_uptodate_dir=-1
@@ -335,7 +335,6 @@ updateLoop() {
             
             
             
-            #??? switch to memory based update?
             
             
             # minimal amount of 86400 such that the end exceed the current time, add the same amount to start

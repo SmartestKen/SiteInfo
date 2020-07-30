@@ -43,9 +43,11 @@ rm -rf /home/k5shao/.local/share/Trash/files/
 # remove pre-stage files
 su k5shao -c "
 mv /home/public/temp/siteFilter.txt /home/public/temp_remove/
+mv /home/public/temp/session.txt /home/public/temp_remove/
 rm -rf /home/public/temp/
 mkdir /home/public/temp/
 mv /home/public/temp_remove/siteFilter.txt /home/public/temp/
+mv /home/public/temp_remove/session.txt /home/public/temp/
 rm -rf /home/public/temp_remove/
 mkdir /home/public/temp_remove/"
 
