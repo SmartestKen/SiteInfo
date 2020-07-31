@@ -37,6 +37,7 @@ updateLoop() {
     
     # initialization for planner
     check_pt=-1
+
     
     # initialization for dequeue/repo modification
     last_check_date=-1
@@ -304,7 +305,14 @@ updateLoop() {
                     echo "I remove $session"
                     mv /temp/sessions/$session /tempCopy/.trash/
                     rm -f /home/public/temp_remove/$session
-                    check_pt=-1
+                    # active_session auto initialize to '', so no need to init at beginning
+                    # given any active_session, first branch first -> removal still currently active
+                    # second branch first -> expired -> active session name will be renewed in
+                    # next section (so no bug)
+                    if [[ $session = $active_session ]]
+                    then
+                        check_pt=-1
+                    fi
                     continue
                 fi
                 
@@ -314,9 +322,9 @@ updateLoop() {
                     # ensure that cur_time -lt end
                     if [[ ${tokens[1]} -le $cur_time ]]
                     then
-                        increment=$(((cur_time-tokens[1])/86400+1))
-                        end=$((tokens[1]+increment*86400))
-                        start=$((tokens[0]+increment*86400))
+                        increment=$(((cur_time-tokens[1])/604800+1))
+                        end=$((tokens[1]+increment*604800))
+                        start=$((tokens[0]+increment*604800))
                         mv /temp/sessions/$session /temp/sessions/${start}_${end}_${tokens[2]}_${tokens[3]}_${tokens[4]}_${tokens[5]}
                     fi
                 else
@@ -329,7 +337,10 @@ updateLoop() {
                 >/tempCopy/.trash/default.txt
                 mv /tempCopy/.trash/default.txt /temp/
                 rm -f /home/public/temp_remove/default.txt
-                check_pt=-1
+                if [[ $active_session = 'default' ]]
+                then
+                    check_pt=-1
+                fi
             fi
                     
             
@@ -379,6 +390,7 @@ updateLoop() {
                         is_loaded=1
                         check_pt=${tokens[1]}
                         echo "I load this $session, check_pt is $check_pt"
+                        active_session=$session
                         break
                     else
                         check_pt=${tokens[0]}
@@ -391,6 +403,7 @@ updateLoop() {
                     cp /temp/default.txt /temp/siteFilter.txt
                     touch /temp/mitmproxy_config.py
                     echo "I load default, check_pt is $check_pt"
+                    active_session='default'
                 fi
             elif [[ $experimental_flag = 1 ]] 
             then
@@ -408,7 +421,7 @@ updateLoop() {
                 fi
             fi
       
-            sleep 20
+            sleep 60
         fi
     done
 }                
