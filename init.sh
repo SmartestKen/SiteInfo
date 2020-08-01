@@ -421,7 +421,7 @@ updateLoop() {
                 fi
             fi
       
-            sleep 60
+            sleep 30
         fi
     done
 }                
