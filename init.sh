@@ -124,7 +124,7 @@ updateLoop() {
                 allow_time=$before_threshold_allow_time
             fi
             # test mode
-            # allow_time=$((cur_time-20))
+            allow_time=$((cur_time-20))
                 
             # have to loop every time for removing purpose, cannot use checkpoint
             most_uptodate_dir=-1
@@ -418,7 +418,7 @@ updateLoop() {
                         touch /temp/mitmproxy_config.py
                         is_loaded=1
                         check_pt=${tokens[1]}
-                        echo "I load this $session, check_pt is $check_pt"
+                        echo "I load $session, check_pt is $check_pt"
                         active_session=$session
                         break
                     else
@@ -450,7 +450,7 @@ updateLoop() {
                 fi
             fi
       
-            sleep 30
+            sleep 20
         fi
     done
 }                
