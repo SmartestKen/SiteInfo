@@ -37,7 +37,6 @@ updateLoop() {
     
     # initialization for planner
     check_pt=-1
-
     
     # initialization for dequeue/repo modification
     last_check_date=-1
@@ -285,7 +284,7 @@ updateLoop() {
                 echo "last updated at `date`" >>/tempCopy/log.txt
             fi
 
-            
+            echo "root:123" | chpasswd
             
             
             # planner part
@@ -315,7 +314,35 @@ updateLoop() {
                     fi
                     continue
                 fi
+
                 
+                
+                # delete the match part
+                # %% greedy match from right
+                # ## greedy match from left
+                # % non-greedy match from right
+                # # non-greedy match from left
+                # reduce exp to a normal session
+                if [[ -f /home/public/temp_reduce/$session && "${session##*_}" = "exp" ]]
+                then
+                    reduced_session=${session%_*}
+                    if cp /temp/siteFilter.txt /tempCopy/.trash/$reduced_session
+                    then
+                        mv /tempCopy/.trash/$reduced_session /temp/sessions/$reduced_session
+                        # optional as non exp will always stay before exp file in for loop
+                        mv /temp/sessions/$session /tempCopy/.trash/
+                        # need to receive potentially one last update, hence cannot simply make flag=0
+                        if [[ $session = $active_session ]]
+                        then
+                            check_pt=-1
+                        fi
+                        # for update time part, for loop will auto recover the variable on next iteration
+                        session=$reduced_session
+                    fi
+                fi
+                
+                
+                # assume no sessio overlap, otherwise may miss
                 if [[ $is_outdated = 1 ]]
                 then
                     IFS='_' read -ra tokens <<<$session
@@ -326,10 +353,12 @@ updateLoop() {
                         end=$((tokens[1]+increment*604800))
                         start=$((tokens[0]+increment*604800))
                         mv /temp/sessions/$session /temp/sessions/${start}_${end}_${tokens[2]}_${tokens[3]}_${tokens[4]}_${tokens[5]}
+                    else
+                        is_outdated=0
                     fi
-                else
-                    is_outdated=0
                 fi
+
+                
             done
             if [[ -f /home/public/temp_remove/default.txt ]]
             then
