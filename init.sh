@@ -325,6 +325,7 @@ updateLoop() {
                 # reduce exp to a normal session
                 if [[ -f /home/public/temp_reduce/$session && "${session##*_}" = "exp" ]]
                 then
+                    echo "I reduce $session"
                     reduced_session=${session%_*}
                     if cp /temp/siteFilter.txt /tempCopy/.trash/$reduced_session
                     then
@@ -356,6 +357,7 @@ updateLoop() {
                     else
                         is_outdated=0
                     fi
+                    echo "from ${tokens[0]}_${tokens[1]} to ${start}_${end}"
                 fi
 
                 
