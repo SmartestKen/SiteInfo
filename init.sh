@@ -303,7 +303,6 @@ updateLoop() {
                 then
                     echo "I remove $session"
                     mv /temp/sessions/$session /tempCopy/.trash/
-                    rm -f /home/public/temp_remove/$session
                     # active_session auto initialize to '', so no need to init at beginning
                     # given any active_session, first branch first -> removal still currently active
                     # second branch first -> expired -> active session name will be renewed in
@@ -326,12 +325,12 @@ updateLoop() {
                 if [[ -f /home/public/temp_reduce/$session && "${session##*_}" = "exp" ]]
                 then
                     echo "I reduce $session"
-                    reduced_session=${session%_*}
-                    if cp /temp/siteFilter.txt /tempCopy/.trash/$reduced_session
+                    if cp /temp/siteFilter.txt /tempCopy/.trash/$session
                     then
-                        mv /tempCopy/.trash/$reduced_session /temp/sessions/$reduced_session
+                        mv /tempCopy/.trash/$session /temp/sessions/$session
                         # optional as non exp will always stay before exp file in for loop
-                        mv /temp/sessions/$session /tempCopy/.trash/
+                        reduced_session=${session%_*}
+                        mv /temp/sessions/$session /temp/sessions/$reduced_session
                         # need to receive potentially one last update, hence cannot simply make flag=0
                         if [[ $session = $active_session ]]
                         then
@@ -366,7 +365,8 @@ updateLoop() {
             then
                 echo "I remove default"
                 >/tempCopy/.trash/default.txt
-                mv /tempCopy/.trash/default.txt /temp/
+                mv /tempCopy/.trash/default.txt /temp/default.txt
+                # other sessions have absolute file name and hence no need to remove
                 rm -f /home/public/temp_remove/default.txt
                 if [[ $active_session = 'default' ]]
                 then
