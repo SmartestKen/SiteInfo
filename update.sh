@@ -49,7 +49,9 @@ mkdir /home/public/temp/
 mv /home/public/temp_remove/siteFilter.txt /home/public/temp/
 mv /home/public/temp_remove/session.txt /home/public/temp/
 rm -rf /home/public/temp_remove/
-mkdir /home/public/temp_remove/"
+mkdir /home/public/temp_remove/
+rm -rf /home/public/temp_reduce/
+mkdir /home/public/temp_reduce/"
 
 # clear stage files
 rm -rf /tempCopy/

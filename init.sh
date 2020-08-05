@@ -124,7 +124,7 @@ updateLoop() {
                 allow_time=$before_threshold_allow_time
             fi
             # test mode
-            allow_time=$((cur_time-20))
+            # allow_time=$((cur_time-20))
                 
             # have to loop every time for removing purpose, cannot use checkpoint
             most_uptodate_dir=-1
@@ -284,7 +284,6 @@ updateLoop() {
                 echo "last updated at `date`" >>/tempCopy/log.txt
             fi
 
-            echo "root:123" | chpasswd
             
             
             # planner part
