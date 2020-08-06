@@ -111,8 +111,8 @@ updateLoop() {
             if [[ $cur_date != $last_check_date ]]
             then
                 threshold_pt=`date +%s --date="$cur_date 8:00"`
-                before_threshold_allow_time=`date +%s --date="$cur_date-1day 00:00"`
-                after_threshold_allow_time=`date +%s --date="$cur_date 00:00"`
+                before_threshold_allow_time=`date +%s --date="$cur_date-2day 00:00"`
+                after_threshold_allow_time=`date +%s --date="$cur_date-1day 00:00"`
                 end_of_date=`date +%s --date="$cur_date+1day 00:00"`
                 last_check_date=$cur_date
             fi

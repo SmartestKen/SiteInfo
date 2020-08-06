@@ -11,6 +11,6 @@ xmodmap -e "keycode 180 = Next"
 
 # remember to adjust brightness
 # xgamma -gamma 0.9
-redshift -O 5300
+redshift -O 4900K
 pkill kate
 pkill nomacs
