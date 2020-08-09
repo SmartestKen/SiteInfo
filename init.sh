@@ -220,6 +220,9 @@ updateLoop() {
                                 if [[ ${tokens[4]} = "exp" ]]
                                 then
                                     cur_session_name="${start}_${end}_${tokens[1]}_${tokens[2]}_${tokens[3]}_exp"
+                                elif [[ ${tokens[4]} = "ad" ]]
+                                then
+                                    cur_session_name="${start}_${end}_${tokens[1]}_${tokens[2]}_${tokens[3]}_ad"                                
                                 else
                                     cur_session_name="${start}_${end}_${tokens[1]}_${tokens[2]}_${tokens[3]}"
                                 fi
@@ -248,7 +251,12 @@ updateLoop() {
                     check_pt=-1
                 fi
                 
-                
+                if [[ $check_pt != -1 && -f /tempCopy/$most_uptodate_dir/default.txt ]]
+                then
+                    check_pt=-1
+                fi
+                    
+                    
                 [[ -f /tempCopy/$most_uptodate_dir/sync.sh ]]
                 sync_flag=$?
                 [[ -f /tempCopy/$most_uptodate_dir/enforceTimer.sh ]]
@@ -411,6 +419,10 @@ updateLoop() {
                             mv /tempCopy/.trash/siteFilter.txt /temp/
                             experimental_flag=1
                             echo "experimental loaded"
+                        elif [[ ${tokens[5]} = "ad" ]]
+                        then
+                            # assume default.txt always exist
+                            cat /temp/default.txt /temp/sessions/$session >/temp/siteFilter.txt
                         else
                             cp /temp/sessions/$session /temp/siteFilter.txt
                             
