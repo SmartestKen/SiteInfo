@@ -10,7 +10,9 @@ updateLoop() {
     
     # assume a full executable copy at /temp (and git already setup)
     # assume nothing about /tempCopy
-    rm -rf /temp/siteFilter.txt
+    rm -f /temp/siteFilter.txt
+    # startup need to use siteFilter for mitm init
+    >/temp/siteFilter.txt
     /temp/startup.sh 
     /temp/sync.sh
     /temp/enforceTimer.sh
@@ -124,7 +126,7 @@ updateLoop() {
                 allow_time=$before_threshold_allow_time
             fi
             # test mode
-            # allow_time=$((cur_time-20))
+            allow_time=$((cur_time-20))
                 
             # have to loop every time for removing purpose, cannot use checkpoint
             most_uptodate_dir=-1
@@ -220,9 +222,9 @@ updateLoop() {
                                 if [[ ${tokens[4]} = "exp" ]]
                                 then
                                     cur_session_name="${start}_${end}_${tokens[1]}_${tokens[2]}_${tokens[3]}_exp"
-                                elif [[ ${tokens[4]} = "ad" ]]
+                                elif [[ ${tokens[4]} = "add" ]]
                                 then
-                                    cur_session_name="${start}_${end}_${tokens[1]}_${tokens[2]}_${tokens[3]}_ad"                                
+                                    cur_session_name="${start}_${end}_${tokens[1]}_${tokens[2]}_${tokens[3]}_add"                                
                                 else
                                     cur_session_name="${start}_${end}_${tokens[1]}_${tokens[2]}_${tokens[3]}"
                                 fi
@@ -419,7 +421,7 @@ updateLoop() {
                             mv /tempCopy/.trash/siteFilter.txt /temp/
                             experimental_flag=1
                             echo "experimental loaded"
-                        elif [[ ${tokens[5]} = "ad" ]]
+                        elif [[ ${tokens[5]} = "add" ]]
                         then
                             # assume default.txt always exist
                             cat /temp/default.txt /temp/sessions/$session >/temp/siteFilter.txt
