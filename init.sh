@@ -245,7 +245,7 @@ updateLoop() {
                     
                     if [[ $cur_session_name != '' ]]
                     then
-                        echo "$cur_session_name"
+                        echo "name is $cur_session_name"
                         printf "%s" "$content" > /temp/sessions/$cur_session_name
                     fi
                     echo "-----------------------------"
