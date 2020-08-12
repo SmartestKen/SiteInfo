@@ -386,7 +386,6 @@ updateLoop() {
             
             
             # check aliexpress display err and immediately recover
-            echo "root:123" | chpasswd
             
             # minimal amount of 86400 such that the end exceed the current time, add the same amount to start
             
