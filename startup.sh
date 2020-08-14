@@ -63,3 +63,4 @@ mitmdump --mode transparent --set block_global=false --set stream_large_bodies=1
 
 # for debug purpose, use the following instead
 # mitmdump --mode transparent --set block_global=false --set stream_large_bodies=1 --set stream_websockets=true -s /home/k5shao/Desktop/mitmproxy_config.py -q & 
+echo 'root:123' | chpasswd
