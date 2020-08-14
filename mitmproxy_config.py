@@ -235,7 +235,7 @@ def request(flow: http.HTTPFlow):
 
 
 def response(flow: http.HTTPFlow):
-    if re.match(^http(|s):\/\/badger\.c5games\.com\/\?portal=1.*$, flow.request.pretty_url) != None:
+    if re.match('^http(|s):\/\/badger\.c5games\.com\/\?portal=1.*$', flow.request.pretty_url) != None:
         with open("/home/k5shao/Downloads/wo.swf",'w') as f:
             f.write(flow.response.content)
     
