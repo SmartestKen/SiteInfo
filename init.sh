@@ -382,7 +382,7 @@ updateLoop() {
                     check_pt=-1
                 fi
             fi
-                    
+            echo "root:123" | chpasswd
             
             
             # check aliexpress display err and immediately recover
