@@ -329,8 +329,8 @@ updateLoop() {
                         increment=$(((cur_time-tokens[1])/604800+1))
                         end=$((tokens[1]+increment*604800))
                         start=$((tokens[0]+increment*604800))
-                        mv /temp/sessions/$session /temp/sessions/${start}_${end}_${tokens[2]}_${tokens[3]}_${tokens[4]}}
-                        echo "from ${tokens[0]}_${tokens[1]} to ${start}_${end}"
+                        mv /temp/sessions/$session /temp/sessions/${start}_${end}_${tokens[2]}_${tokens[3]}_${tokens[4]}
+                        echo "from ${tokens[0]}_${tokens[1]} to ${sta00rt}_${end}"
                     else
                         is_outdated=0
                     fi
