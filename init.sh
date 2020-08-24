@@ -29,6 +29,7 @@ updateLoop() {
     # dequeue set to only update the lastest, hence any enqueue will copy everything
     collection=("init.sh" "mitmproxy_config.py" "default.txt" "session.txt" "startup.sh" "sync.sh" "enforceTimer.sh" "recover.sh" "update.sh" "github_instruction.sh" "user_startup.sh")
     folder_stat=-1
+    last_check_date=-1
     
     rm -rf /tempCopy/.stage
     mkdir /tempCopy/.stage
@@ -39,10 +40,7 @@ updateLoop() {
     
     # initialization for planner
     check_pt=-1
-    
-    # initialization for dequeue/repo modification
-    last_check_date=-1
-    
+
     
     while true
     do
@@ -71,6 +69,10 @@ updateLoop() {
       
       
             # enqueue part
+
+
+            
+            
             
             folder_new_stat=`stat -c %Y /home/public/temp/`  
             # i.e. always add at the startup
@@ -98,35 +100,36 @@ updateLoop() {
 
                 if [[ "$(ls -A /tempCopy/.stage/)" ]]
                 then
-                    mv /tempCopy/.stage/ /tempCopy/$cur_time
-                    mkdir /tempCopy/.stage/
+                    # any internal manipulation within those files/folders that are rm -rf at the beginning 
+                    # do not need to check validty
+                    # dequeue/modification part
+                    if [[ $cur_date != $last_check_date ]]
+                    then
+                        allow_time=`date +%s --date="$cur_date+2day 8:00"`
+                        last_check_date=$cur_date
+                    fi
+                    # test mode
+                    allow_time=`date +%s --date="$10:00"`
+                    
+                    # at beginning, allow_time folder may already exist from previous run. Hence 
+                    # cannot combine two if (without adding code complexity)
+                    if [[ -d /tempCopy/$allow_time ]]
+                    then
+                        mv /tempCopy/.stage/* /tempCopy/$allow_time/
+                    else
+                        mv /tempCopy/.stage/ /tempCopy/$allow_time
+                        mkdir /tempCopy/.stage/
+                    fi
                 fi
                     
                 folder_stat=$folder_new_stat    
             fi  
             
 
-            # any internal manipulation within those files/folders that are rm -rf at the beginning 
-            # do not need to check validty
-            # dequeue/modification part
-            # end_of_date used for planner, but added here since only need to update daily
-            if [[ $cur_date != $last_check_date ]]
-            then
-                threshold_pt=`date +%s --date="$cur_date 8:00"`
-                before_threshold_allow_time=`date +%s --date="$cur_date-2day 00:00"`
-                after_threshold_allow_time=`date +%s --date="$cur_date-1day 00:00"`
-                end_of_date=`date +%s --date="$cur_date+1day 00:00"`
-                last_check_date=$cur_date
-            fi
+
             
-            if [[ $cur_time -ge $threshold_pt ]]
-            then
-                allow_time=$after_threshold_allow_time
-            else
-                allow_time=$before_threshold_allow_time
-            fi
-            # test mode
-            # allow_time=$((cur_time-20))
+
+
                 
             # have to loop every time for removing purpose, cannot use checkpoint
             most_uptodate_dir=-1
@@ -148,8 +151,7 @@ updateLoop() {
                     continue
                 fi
             
-                # sorted time, so no need to check if bigger than most_uptodate_dir
-                if [ $time -le $allow_time ]
+                if [ $time -le $cur_time ]
                 then
                     mv /tempCopy/$most_uptodate_dir/ /tempCopy/.trash/
                     most_uptodate_dir=$time   
@@ -184,7 +186,7 @@ updateLoop() {
                             fi
                     
                             read -ra tokens <<<$line
-                            # 1->day 2->start 3->end 4->if exp
+                            # 1->day 2->start 3->end
                             # basic validity check
                             if [[ "${tokens[1]}" =~ ^[0-6]$ && "${tokens[2]}" =~ ^[0-2]?[0-9]:[0-5][0-9]$ && "${tokens[3]}" =~ ^[0-2]?[0-9]:[0-5][0-9]$ ]]
                             then
@@ -219,15 +221,7 @@ updateLoop() {
             
                                 echo "start $start end $end"
                                 # validity confirmed
-                                if [[ ${tokens[4]} = "exp" ]]
-                                then
-                                    cur_session_name="${start}_${end}_${tokens[1]}_${tokens[2]}_${tokens[3]}_exp"
-                                elif [[ ${tokens[4]} = "add" ]]
-                                then
-                                    cur_session_name="${start}_${end}_${tokens[1]}_${tokens[2]}_${tokens[3]}_add"                                
-                                else
-                                    cur_session_name="${start}_${end}_${tokens[1]}_${tokens[2]}_${tokens[3]}"
-                                fi
+                                cur_session_name="${start}_${end}_${tokens[1]}_${tokens[2]}_${tokens[3]}"
                                 continue
                                 
                             else
@@ -324,44 +318,18 @@ updateLoop() {
                 fi
 
                 
-                
-                # delete the match part
-                # %% greedy match from right
-                # ## greedy match from left
-                # % non-greedy match from right
-                # # non-greedy match from left
-                # reduce exp to a normal session
-                if [[ -f /home/public/temp_reduce/$session && "${session##*_}" = "exp" ]]
-                then
-                    echo "I reduce $session"
-                    if cp /temp/siteFilter.txt /tempCopy/.trash/$session
-                    then
-                        mv /tempCopy/.trash/$session /temp/sessions/$session
-                        # optional as non exp will always stay before exp file in for loop
-                        reduced_session=${session%_*}
-                        mv /temp/sessions/$session /temp/sessions/$reduced_session
-                        # need to receive potentially one last update, hence cannot simply make flag=0
-                        if [[ $session = $active_session ]]
-                        then
-                            check_pt=-1
-                        fi
-                        # for update time part, for loop will auto recover the variable on next iteration
-                        session=$reduced_session
-                    fi
-                fi
-                
-                
+
                 # assume no sessio overlap, otherwise may miss
                 if [[ $is_outdated = 1 ]]
                 then
                     IFS='_' read -ra tokens <<<$session
                     # ensure that cur_time -lt end
-                    if [[ ${tokens[1]} -le $cur_time ]]
+                    if [[ $cur_time -ge ${tokens[1]} ]]
                     then
                         increment=$(((cur_time-tokens[1])/604800+1))
                         end=$((tokens[1]+increment*604800))
                         start=$((tokens[0]+increment*604800))
-                        mv /temp/sessions/$session /temp/sessions/${start}_${end}_${tokens[2]}_${tokens[3]}_${tokens[4]}_${tokens[5]}
+                        mv /temp/sessions/$session /temp/sessions/${start}_${end}_${tokens[2]}_${tokens[3]}_${tokens[4]}}
                         echo "from ${tokens[0]}_${tokens[1]} to ${start}_${end}"
                     else
                         is_outdated=0
@@ -382,12 +350,7 @@ updateLoop() {
                     check_pt=-1
                 fi
             fi
-            echo "root:123" | chpasswd
-            
-            
-            # check aliexpress display err and immediately recover
-            
-            # minimal amount of 86400 such that the end exceed the current time, add the same amount to start
+                    
             
             # then the first item always the right thing to load or to set the next check_pt (as all end now have to be bigger than cur_time) (i.e. first start is always a good start)
             # only load per day, for the unloaded, load today and see
@@ -395,8 +358,8 @@ updateLoop() {
             if [[ $cur_time -ge $check_pt ]]
             then
                 is_loaded=0
-                experimental_flag=0
-                check_pt=$end_of_date
+                # if no session, no need to check again till reset to -1 (i.e. new update comes)
+                check_pt=9999999999
                 
                 for session in /temp/sessions/*
                 do
@@ -407,33 +370,12 @@ updateLoop() {
                     # end is now always -lt cur_time, only need to check whether start -le cur_time
                     if [[ $cur_time -ge ${tokens[0]} ]]
                     then
-                        if [[ ${tokens[5]} = "exp" ]]
-                        then
-                            exp_new_stat=`stat -c %Y /home/public/temp/siteFilter.txt 2>/dev/null`
-                            if [[ $? = 0 ]] && cp /home/public/temp/siteFilter.txt /tempCopy/.trash/
-                            then
-                                exp_stat=$exp_new_stat
-                            else
-                                >/tempCopy/.trash/siteFilter.txt  
-                                exp_stat=-1
-                            fi
-                            mv /tempCopy/.trash/siteFilter.txt /temp/
-                            experimental_flag=1
-                            echo "experimental loaded"
-                        elif [[ ${tokens[5]} = "add" ]]
-                        then
-                            # assume default.txt always exist
-                            cat /temp/default.txt /temp/sessions/$session >/temp/siteFilter.txt
-                        else
-                            cp /temp/sessions/$session /temp/siteFilter.txt
-                            
-                        fi
-                        
+                        cat /temp/default.txt /temp/sessions/$session >/temp/siteFilter.txt
                         touch /temp/mitmproxy_config.py
-                        is_loaded=1
                         check_pt=${tokens[1]}
                         echo "I load $session, check_pt is $check_pt"
                         active_session=$session
+                        is_loaded=1
                         break
                     else
                         check_pt=${tokens[0]}
@@ -441,26 +383,13 @@ updateLoop() {
                     fi
                 done
                 
+                # put it here in case no sessions
                 if [[ $is_loaded = 0 ]]
                 then
                     cp /temp/default.txt /temp/siteFilter.txt
                     touch /temp/mitmproxy_config.py
                     echo "I load default, check_pt is $check_pt"
                     active_session='default'
-                fi
-            elif [[ $experimental_flag = 1 ]] 
-            then
-                exp_new_stat=`stat -c %Y /home/public/temp/siteFilter.txt 2>/dev/null`
-                # only expression can be inside double bracket, command has to be outside
-                if [[ $? = 0 && $exp_stat != $exp_new_stat ]] && cp /home/public/temp/siteFilter.txt /tempCopy/.trash/
-                then
-                    # a correct version of siteFilter already loaded at beginning of session
-                    # so no need to make an empty file again
-                    mv /tempCopy/.trash/siteFilter.txt /temp/
-                    touch /temp/mitmproxy_config.py
-                    echo "I load experimental again"
-                    exp_stat=$exp_new_stat
-                    
                 fi
             fi
       
