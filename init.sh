@@ -236,7 +236,7 @@ updateLoop() {
                                     then
                                         isrefsession=1
                                     else
-                                        echo "name is $cur_session_name"
+                                        echo "name is $cur_session_name with ${refs[${tokens[4]}]}"
                                         printf "%s" "${refs[${tokens[4]}]}" >/tempCopy/.trash/temp_session
                                         mv /tempCopy/.trash/temp_session /temp/sessions/$cur_session_name
                                         cur_session_name=''
