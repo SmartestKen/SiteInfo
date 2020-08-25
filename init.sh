@@ -174,7 +174,7 @@ updateLoop() {
                     mkdir /temp/sessions
                     cur_session_name=''
                     content=''
-                    declare -a refs=()
+                    declare -a refs
                     isrefsession=0
                     echo "-----------------------------"
                     while read -r line
@@ -231,7 +231,7 @@ updateLoop() {
                                 echo "start $start end $end"
                                 # validity confirmed
                                 cur_session_name="${start}_${end}_${tokens[1]}_${tokens[2]}_${tokens[3]}"
-                                if [[ ${tokens[4]} =~ ^ref[0-9]$ ]]
+                                if [[ ${tokens[4]} =~ ^[0-9]$ ]]
                                 then
                                     if [[ -v refs[${tokens[4]}] ]]
                                     then
@@ -262,10 +262,10 @@ updateLoop() {
                     done < "/tempCopy/$most_uptodate_dir/session.txt"
                     
                     
-                    echo "ref1 
-                            ${refs["ref1"]}"
-                    echo "ref2
-                            ${refs["ref2"]}"
+                    echo "1 
+                            ${refs["1"]}"
+                    echo "2
+                            ${refs["2"]}"
                     echo "abc
                             ${refs["abc"]}"
                     if [[ $cur_session_name != '' ]]
