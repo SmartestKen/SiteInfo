@@ -266,6 +266,8 @@ updateLoop() {
                             ${refs[ref1]}"
                     echo "ref2
                             ${refs[ref2]}"
+                    echo "ref3
+                            ${refs[ref3]}"
                     if [[ $cur_session_name != '' ]]
                     then
                         # if self is the first ref, then no one needs that. else already dealt at reading the session, hence no need to consider isrefsession here
