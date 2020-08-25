@@ -232,14 +232,16 @@ updateLoop() {
                                 cur_session_name="${start}_${end}_${tokens[1]}_${tokens[2]}_${tokens[3]}"
                                 if [[ ${tokens[4]} =~ ^ref[0-9]$ ]]
                                 then
-                                    if [[ ${refs[${tokens[4]}]} = '' ]]
+                                    if [[ -v refs[${tokens[4]}] ]]
                                     then
-                                        isrefsession=1
-                                    else
+                                        # ref token already set
                                         echo "name is $cur_session_name with ${refs[${tokens[4]}]}"
                                         printf "%s" "${refs[${tokens[4]}]}" >/tempCopy/.trash/temp_session
                                         mv /tempCopy/.trash/temp_session /temp/sessions/$cur_session_name
                                         cur_session_name=''
+                                    else
+                                        # new ref session
+                                        isrefsession=1
                                     fi
                                 fi
                                 
