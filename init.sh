@@ -183,6 +183,7 @@ updateLoop() {
                             if [[ $cur_session_name != '' ]]
                             then
                                 echo "name is $cur_session_name"
+                                echo "$content"
                                 if [[ $isrefsession = 1 ]]
                                 then
                                     refs[${tokens[4]}]=$content
@@ -190,9 +191,8 @@ updateLoop() {
                                 fi
                                 printf "%s" "$content" >/tempCopy/.trash/temp_session
                                 mv /tempCopy/.trash/temp_session /temp/sessions/$cur_session_name
-                                content=''
                             fi
-                    
+                            content=''
                             read -ra tokens <<<$line
                             # 1->day 2->start 3->end
                             # basic validity check
