@@ -185,7 +185,7 @@ updateLoop() {
                                 echo "name is $cur_session_name"
                                 if [[ $isrefsession = 1 ]]
                                 then
-                                    ${refs[${tokens[4]}]}=$content
+                                    refs[${tokens[4]}]=$content
                                     isrefsession=0
                                 fi
                                 printf "%s" "$content" >/tempCopy/.trash/temp_session
