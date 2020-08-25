@@ -109,7 +109,7 @@ updateLoop() {
                         last_check_date=$cur_date
                     fi
                     # test mode
-                    allow_time=`date +%s --date="00:00"`
+                    # allow_time=`date +%s --date="00:00"`
                     
                     # at beginning, allow_time folder may already exist from previous run. Hence 
                     # cannot combine two if (without adding code complexity)
