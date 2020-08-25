@@ -260,6 +260,11 @@ updateLoop() {
                         fi
                     done < "/tempCopy/$most_uptodate_dir/session.txt"
                     
+                    
+                    echo "ref1 
+                            ${refs[ref1]}"
+                    echo "ref2
+                            ${refs[ref2]}"
                     if [[ $cur_session_name != '' ]]
                     then
                         # if self is the first ref, then no one needs that. else already dealt at reading the session, hence no need to consider isrefsession here
