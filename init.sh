@@ -174,6 +174,8 @@ updateLoop() {
                     mkdir /temp/sessions
                     cur_session_name=''
                     content=''
+                    declare -a refs
+                    isrefsession=0
                     echo "-----------------------------"
                     while read -r line
                     do
@@ -181,7 +183,13 @@ updateLoop() {
                             if [[ $cur_session_name != '' ]]
                             then
                                 echo "name is $cur_session_name"
-                                printf "%s" "$content" > /temp/sessions/$cur_session_name
+                                if [[ $isrefsession = 1 ]]
+                                then
+                                    ${refs[${tokens[4]}]}=$content
+                                    isrefsession=0
+                                fi
+                                printf "%s" "$content" >/tempCopy/.trash/temp_session
+                                mv /tempCopy/.trash/temp_session /temp/sessions/$cur_session_name
                                 content=''
                             fi
                     
@@ -200,7 +208,7 @@ updateLoop() {
                                 start=`date +%s --date="+${day_diff}day ${tokens[2]}"`
                                 if [[ $? != 0 ]]
                                 then
-                                    cur_session_name=-1
+                                    cur_session_name=''
                                     continue
                                 fi                                    
                                 
@@ -212,7 +220,7 @@ updateLoop() {
                                     end=`date +%s --date="+${day_diff}day ${tokens[3]}"`
                                     if [[ $? != 0 ]]
                                     then
-                                        cur_session_name=-1
+                                        cur_session_name=''
                                         continue
                                     fi
                                 else
@@ -222,10 +230,23 @@ updateLoop() {
                                 echo "start $start end $end"
                                 # validity confirmed
                                 cur_session_name="${start}_${end}_${tokens[1]}_${tokens[2]}_${tokens[3]}"
+                                if [[ ${tokens[4]} =~ ^ref[0-9]$ ]]
+                                then
+                                    if [[ ${refs[${tokens[4]}]} = '' ]]
+                                    then
+                                        isrefsession=1
+                                    else
+                                        echo "name is $cur_session_name"
+                                        printf "%s" "${refs[${tokens[4]}]}" >/tempCopy/.trash/temp_session
+                                        mv /tempCopy/.trash/temp_session /temp/sessions/$cur_session_name
+                                        cur_session_name=''
+                                    fi
+                                fi
+                                
                                 continue
                                 
                             else
-                                cur_session_name=-1
+                                cur_session_name=''
                                 continue
                             fi
                         esac
@@ -239,8 +260,10 @@ updateLoop() {
                     
                     if [[ $cur_session_name != '' ]]
                     then
+                        # if self is the first ref, then no one needs that. else already dealt at reading the session, hence no need to consider isrefsession here
                         echo "name is $cur_session_name"
-                        printf "%s" "$content" > /temp/sessions/$cur_session_name
+                        printf "%s" "$content" >/tempCopy/.trash/temp_session
+                        mv /tempCopy/.trash/temp_session /temp/sessions/$cur_session_name
                     fi
                     echo "-----------------------------"
                     mv /tempCopy/$most_uptodate_dir/session.txt /tempCopy/.trash/
