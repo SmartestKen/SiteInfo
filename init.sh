@@ -174,7 +174,7 @@ updateLoop() {
                     mkdir /temp/sessions
                     cur_session_name=''
                     content=''
-                    declare -a refs
+                    declare -a refs=()
                     isrefsession=0
                     echo "-----------------------------"
                     while read -r line
