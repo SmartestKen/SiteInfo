@@ -173,7 +173,7 @@ updateLoop() {
                     mv /temp/sessions /tempCopy/.trash/
                     mkdir /temp/sessions
                     cur_session_name=''
-                    content=''
+                    # not an associative array, index must be number
                     declare -a refs
                     isrefsession=0
                     echo "-----------------------------"
@@ -183,7 +183,6 @@ updateLoop() {
                             if [[ $cur_session_name != '' ]]
                             then
                                 echo "name is $cur_session_name"
-                                echo "$content"
                                 if [[ $isrefsession = 1 ]]
                                 then
                                     echo "I assign new ref session"
@@ -228,7 +227,6 @@ updateLoop() {
                                     end=`date +%s --date="+$((day_diff+1))day 00:00"`
                                 fi
             
-                                echo "start $start end $end"
                                 # validity confirmed
                                 cur_session_name="${start}_${end}_${tokens[1]}_${tokens[2]}_${tokens[3]}"
                                 if [[ ${tokens[4]} =~ ^[0-9]$ ]]
@@ -261,13 +259,7 @@ updateLoop() {
                         fi
                     done < "/tempCopy/$most_uptodate_dir/session.txt"
                     
-                    
-                    echo "1 
-                            ${refs["1"]}"
-                    echo "2
-                            ${refs["2"]}"
-                    echo "abc
-                            ${refs["abc"]}"
+
                     if [[ $cur_session_name != '' ]]
                     then
                         # if self is the first ref, then no one needs that. else already dealt at reading the session, hence no need to consider isrefsession here
