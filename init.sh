@@ -186,6 +186,7 @@ updateLoop() {
                                 echo "$content"
                                 if [[ $isrefsession = 1 ]]
                                 then
+                                    echo "I assign new ref session"
                                     refs[${tokens[4]}]=$content
                                     isrefsession=0
                                 fi
