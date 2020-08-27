@@ -177,6 +177,17 @@ chown root:root /home/private/.gitignore
 #---------------other installation---------------
 
 
+# secure grub
+echo "add --unrestricted at the end of '--class gnu-linux --class gnu --class os' in /etc/grub.d/10_linux"
+echo "add the following at the end of /etc/grub.d/00_header with random password
+cat << EOF
+set superusers='root'
+password root randompassword
+export superusers
+EOF"
+chmod 711 /etc/grub.d/00_header
+update-grub
+
 # k5shao startup script
 su k5shao -c "
 cp /temp/user_startup.sh /home/k5shao/.config/autostart-scripts/user_startup.sh
