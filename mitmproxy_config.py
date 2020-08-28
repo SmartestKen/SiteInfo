@@ -172,7 +172,7 @@ def isGoodUrl(host, url):
 
         # default block everything, init token block by default
         # use token = 'a' if want to allow (say edu) sites by default
-        if len(hostSplitList) >= 3 and (hostSplitList[-3] == 'stat' or hostSplitList[-3] == 'math') and hostSplitList[-1] == 'edu':
+        if hostSplitList[-1] == 'edu':
             token = 'a'
         else:
             token = 'b'                                                                                          
