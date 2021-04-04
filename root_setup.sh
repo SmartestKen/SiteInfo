@@ -4,7 +4,7 @@
 
 # 2 actions (hide menus + password) to grub2 will make it secure. optionally hidden timeout = 0 to avoid popup
 
-# -------- browser, redshift, git and dns server, iphone connection
+# -------- browser, redshift, git and dns server
 
 wget -O /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
 
@@ -13,8 +13,6 @@ echo "deb [signed-by=/usr/sh c  are/keyrings/brave-browser-archive-keyring.gpg a
 apt update
 
 apt install brave-browser redshift git 
-# Iphone connection (libimobiledevice-utils ifuse)
-apt install -y --no-install-recommends libimobiledevice-utils ifuse
 
 
 # TODO change it to fix the file
@@ -63,10 +61,6 @@ update-grub
 
 # fonts-noto-cjk 
 apt-get purge -y fonts-droid-fallback vlc okular firefox packagekit kdeconnect gwenview k3b muon kwalletmanager skanlite kcalc partitionmanager plasma-vault kubuntu-notification-helper whoopsie bluez* >/dev/null
-
-
-# use this if virtualbox
-# apt-get -qq purge -y unattended-upgrades >/dev/null
 
 
 apt autoremove -y
