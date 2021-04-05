@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # run as root, assume standard user k5shao
-# echo "root:123" | chpasswd
+# echo "root:123" | sudo chpasswd
 
 
 
@@ -15,8 +15,8 @@ echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=
 
 apt update -y 
 
-apt install -y brave-browser redshift git 
-
+apt install -y brave-browser redshift git
+redshift -O 3000K
 
 
 rm -f /etc/resolv.conf
@@ -62,9 +62,20 @@ update-grub
 #---------------removal (leave prohibit to k5shao_setup)
 
 # fonts-noto-cjk 
-apt-get purge -y fonts-droid-fallback vlc* okular* firefox* packagekit* kdeconnect* gwenview* k3b* muon* wallet* skanlite* kcalc* partitionmanager* plasma-vault* kubuntu-notification-helper* whoopsie* bluez* plasma-discover* baloo*
+apt purge -y fonts-droid-fallback vlc* okular* firefox* packagekit* kdeconnect* gwenview* k3b* muon* kwallet* skanlite* kcalc* partitionmanager* plasma-vault* kubuntu-notification-helper* whoopsie* bluez* plasma-discover*
 
 
 apt autoremove -y
 apt autoclean -y
 apt clean -y
+
+
+#--------------- blocking starts
+usermod -p '!' root
+deluser k5shao sudo
+
+# reboot
+if [ "${1:-None}" != "test" ]
+then
+    reboot
+fi
